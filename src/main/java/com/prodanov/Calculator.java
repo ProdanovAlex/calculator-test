@@ -1,24 +1,24 @@
 package com.prodanov;
 
+import com.prodanov.exception.NoSupportOperationException;
+
 import java.io.ByteArrayInputStream;
 import java.util.Scanner;
 
 public class Calculator {
 
     Calculator() {
-        this.show_hint();
+        this.showHint();
         this.listenUserPrompt();
     }
 
-    Calculator(String szCommand)
-    {
-        //this.show_hint();
+    Calculator(String szCommand) {
+        //this.showHint();
         this.sendCommand(szCommand);
         this.listenUserPrompt();
     }
 
-    private void show_hint()
-    {
+    private void showHint() {
         System.out.println("Use this as a simple calculator");
         System.out.println("There are following available operation: ");
         System.out.println("Addition: 125 + 456");
@@ -30,42 +30,32 @@ public class Calculator {
         System.out.println("Enter an expression or CTRL+D to exit");
     }
 
-    private void sendCommand(String szCommand)
-    {
+    private void sendCommand(String szCommand) {
         byte[] btCommand = szCommand.getBytes();
         ByteArrayInputStream pIn = new ByteArrayInputStream(btCommand);
         System.setIn(pIn);
     }
 
-    private void listenUserPrompt()
-    {
+    private void listenUserPrompt() {
         Scanner prompt = new Scanner(System.in);
-        while (true)
-        {
+        while (true) {
             String szIn = null;
-            try
-            {
+            try {
                 szIn = prompt.nextLine();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 szIn = null;
             }
 
-            if (szIn == null)
-            {
+            if (szIn == null) {
                 break;
-            }
-            else
-            {
+            } else {
                 double fRes = parseInput(szIn);
                 System.out.println("The result of your operation is: " + fRes);
             }
         }
     }
 
-    private double parseInput(String userInput)
-    {
+    private double parseInput(String userInput) {
         System.out.println("_____________________________________________________");
         System.out.println("The request command: " + userInput);
 
@@ -74,35 +64,23 @@ public class Calculator {
         int lastIndex = -1;
         int len = userInput.length();
 
-        if ((index = userInput.indexOf("+")) > 0 && userInput.lastIndexOf("+") == index)
-        {
+        if ((index = userInput.indexOf("+")) > 0 && userInput.lastIndexOf("+") == index) {
             result = add(userInput.substring(0, index).trim(), userInput.substring(index + 1, len));
-        }
-        else if ((index = userInput.indexOf("-")) > 0 && userInput.lastIndexOf("-") == index)
-        {
+        } else if ((index = userInput.indexOf("-")) > 0 && userInput.lastIndexOf("-") == index) {
             result = sub(userInput.substring(0, index).trim(), userInput.substring(index + 1, len));
-        }
-        else if ((index = userInput.indexOf("/")) > 0 && userInput.lastIndexOf("/") == index)
-        {
+        } else if ((index = userInput.indexOf("/")) > 0 && userInput.lastIndexOf("/") == index) {
             Double tempDouble = Double.valueOf(userInput.substring(index + 1, len));
             if (tempDouble == 0) {
                 throw new NoSupportOperationException("No support operation");
-            }
-            else {
+            } else {
                 result = div(userInput.substring(0, index).trim(), userInput.substring(index + 1, len));
             }
 
-        }
-        else if ((index = userInput.indexOf("*")) > 0 && (lastIndex = userInput.lastIndexOf("*")) == (index + 1))
-        {
+        } else if ((index = userInput.indexOf("*")) > 0 && (lastIndex = userInput.lastIndexOf("*")) == (index + 1)) {
             result = pow(userInput.substring(0, index).trim(), userInput.substring(lastIndex + 1, len));
-        }
-        else if ((index = userInput.indexOf("*")) > 0 && userInput.lastIndexOf("*") == index)
-        {
+        } else if ((index = userInput.indexOf("*")) > 0 && userInput.lastIndexOf("*") == index) {
             result = mult(userInput.substring(0, index).trim(), userInput.substring(index + 1, len));
-        }
-        else
-        {
+        } else {
             throw new NoSupportOperationException("No support operation");
 
         }
@@ -128,7 +106,5 @@ public class Calculator {
     private double pow(String first, String second) {
         return Math.pow(Double.valueOf(first), Double.valueOf(second));
     }
-
-
 }
 
